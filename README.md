@@ -1,2 +1,2 @@
 # Studying-Sparse-Dense-Retrieval
-Assignment II (prof. Bruch)
+Assignment II (prof. Bruch) LwMD
