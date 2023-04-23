@@ -1,0 +1,19 @@
+name: sbruch-assignment-lwmd
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - matplotlib
+  - pandas
+  - jupyter
+  - jupytext
+  - nltk
+  - seaborn
+  - nb_conda_kernels
+  - loguru
+  - transformers
+  - sentence-transformers
+  - pip
+  - pip:
+      - beir
+      - rank_bm25
