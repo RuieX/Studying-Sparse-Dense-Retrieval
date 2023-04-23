@@ -1,3 +1,5 @@
 
 *.jsonl
 src/data/trec-covid/qrels/test.tsv
+data/trec-covid/qrels/test.tsv
+data/trec-covid.zip
