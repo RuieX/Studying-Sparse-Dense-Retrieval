@@ -1,6 +1,7 @@
 name: sbruch-assignment-lwmd
 channels:
   - conda-forge
+#  - pytorch
 dependencies:
   - python=3.10
   - matplotlib
@@ -13,6 +14,9 @@ dependencies:
   - loguru
   - transformers
   - sentence-transformers
+#  - torchvision
+#  - torchaudio
+#  - pytorch-cuda=11.8
   - pip
   - pip:
       - beir
