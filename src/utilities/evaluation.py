@@ -3,7 +3,7 @@ from typing import Type, Tuple, Mapping, Sequence, Dict, List, NamedTuple, Any
 
 import numpy as np
 
-import src.scores as sc
+import src.utilities.scores as sc
 
 
 DocumentIndices: Type = np.ndarray[int]

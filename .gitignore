@@ -3,3 +3,7 @@
 src/data/trec-covid/qrels/test.tsv
 data/trec-covid/qrels/test.tsv
 data/trec-covid.zip
+data/trec-covid/tokens/doc_tokens.pkl
+data/trec-covid/tokens/query_tokens.pkl
+src/utilities/__pycache__/evaluation.cpython-310.pyc
+*.pyc

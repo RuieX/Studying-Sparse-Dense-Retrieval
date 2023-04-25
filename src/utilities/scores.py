@@ -4,7 +4,7 @@ import numpy as np
 import torch
 from sentence_transformers import SentenceTransformer
 
-import src.tokenization as tok
+import src.utilities.tokenization as tok
 
 Scores: Type = np.ndarray[float]
 SparseEmbeddings: Type = np.ndarray[float]

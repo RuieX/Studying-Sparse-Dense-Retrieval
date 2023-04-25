@@ -5,6 +5,7 @@ from typing import Sequence, Type, Protocol, Dict, Tuple, NamedTuple
 import nltk
 from nltk import RegexpTokenizer
 from transformers import BertTokenizer
+from tqdm import tqdm
 
 
 # Some typedefs to better grasp how the dataset is actually structured
@@ -82,20 +83,8 @@ class TokenizedText(NamedTuple):
 
 
 # Some typedef utils
-TokenizedQueries: Type = Sequence[TokenizedText]
 TokenizedDocuments: Type = Sequence[TokenizedText]
-
-
-def get_tokenized_queries(
-        queries: Queries,
-        tokenization_type=TokenizationType.Subword
-) -> TokenizedQueries:
-    tokenizer = get_tokenizer(tokenization_type)
-
-    return [
-        TokenizedText(text_id=q_id, tokens=tokenize(q_text, tokenizer))
-        for q_id, q_text in queries.items()
-    ]
+TokenizedQueries: Type = Sequence[TokenizedText]
 
 
 def get_tokenized_documents(
@@ -106,7 +95,23 @@ def get_tokenized_documents(
 
     return [
         TokenizedText(text_id=doc_id, tokens=tokenize(compact_document(doc), tokenizer))
-        for doc_id, doc in docs.items()
+        for doc_id, doc in tqdm(docs.items(), desc="Tokenizing documents")
+    ]
+# Each TokenizedText object contains a document ID and a list of tokenized words for that document.
+# The function uses the get_tokenizer function to get a tokenizer based on the tokenization_type,
+# and then applies that tokenizer to each document in docs using the tokenize function.
+
+
+# TODO no cleaning?
+def get_tokenized_queries(
+        queries: Queries,
+        tokenization_type=TokenizationType.Subword
+) -> TokenizedQueries:
+    tokenizer = get_tokenizer(tokenization_type)
+
+    return [
+        TokenizedText(text_id=q_id, tokens=tokenize(q_text, tokenizer))
+        for q_id, q_text in tqdm(queries.items(), desc="Tokenizing queries")
     ]
 
 
