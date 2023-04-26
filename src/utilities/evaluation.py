@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Type, Tuple, Mapping, Sequence, Dict, List, NamedTuple, Any
+from typing import Type, Mapping, Sequence, Dict, List, NamedTuple, Any
 
 import numpy as np
 

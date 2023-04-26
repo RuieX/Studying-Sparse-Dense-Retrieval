@@ -71,14 +71,6 @@ def bm25_retrieval(documents, queries):
         for doc_id, text in tqdm(queries.items(), desc="query cleaning and tokenization"):
             q[doc_id] = _tokenizer_cleaner(text)
 
-
-
-
-
-
-
-
-
     # BM25
 
     results = {}

@@ -123,9 +123,7 @@ def compact_documents(docs: Documents) -> Sequence[str]:
     :return: compacted documents: each document is now a single string instead of a dictionary
     """
 
-    return [
-        compact_document(d) for d in docs.values()
-    ]
+    return [compact_document(d) for d in docs.values()]
 
 
 def compact_document(doc: Document) -> str:
@@ -140,9 +138,7 @@ class Tokenizer(Protocol):
 WORD_TOKENIZER: Tokenizer = RegexpTokenizer(r'\w+')
 
 SUBWORD_TOKENIZER: Tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-"""
-From: https://huggingface.co/docs/transformers/tokenizer_summary#subword-tokenization
-"""
+# https://huggingface.co/docs/transformers/tokenizer_summary#subword-tokenization
 
 
 def get_tokenizer(tokenization_type: TokenizationType) -> Tokenizer:
