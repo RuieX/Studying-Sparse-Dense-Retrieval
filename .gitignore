@@ -8,3 +8,4 @@ data/trec-covid/tokens/query_tokens.pkl
 src/utilities/__pycache__/evaluation.cpython-310.pyc
 *.pyc
 *.np
+data/trec-covid/results/results.pkl

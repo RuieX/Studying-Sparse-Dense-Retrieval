@@ -1,6 +1,6 @@
 import dataclasses
 from typing import Type, Mapping, Sequence, Dict, List, NamedTuple, Any
-
+import tqdm
 import numpy as np
 
 import src.utilities.scores as sc
@@ -35,8 +35,7 @@ def get_dataset_results(
         idx_to_doc_id: Mapping[int, Any],
 ) -> ResultsByK:
     """
-    Tests retrieval system for different values of k and returns a set of results for each such k.
-
+    Tests retrieval system for different values of k and returns a set of results for each such k
     :param scores_by_query_id: map that contains pair of scores keyed by query id
     :param k_values: set of values of k to run the retrieval system on
     :param idx_to_doc_id: map that contains actual document ids
@@ -47,11 +46,11 @@ def get_dataset_results(
     results_by_k: ResultsByK = {}
 
     for k in k_values:
-        results: List[Result] = []
+        results = []  # List[Result]
 
         # For each query, get the top documents from the sparse and dense system
         #   and calculate the recall with respect to the ground truth as a function of k'
-        for q_id, scores in scores_by_query_id.items():
+        for q_id, scores in tqdm.tqdm(scores_by_query_id.items(), desc=f"Processing k={k}", unit="query"):
             dense, sparse = scores
             dense = normalize_scores(scores=dense)
             sparse = normalize_scores(scores=sparse)
@@ -59,13 +58,14 @@ def get_dataset_results(
             ground_truth = get_ground_truth(sparse_scores=sparse, dense_scores=dense, k=k)
 
             n_docs = len(sparse)
-            recall_by_k_prime: Dict[int, float] = {}
-            for k_prime in range(k, n_docs):
+            recall_by_k_prime = {}  # Dict[int, float]
+            # check k' as 10 evenly spaced values between k and n_docs
+            for k_prime in np.linspace(k, n_docs, num=20, dtype=int):
                 approx_top_k = get_approximate_top_k(sparse_scores=sparse, dense_scores=dense, k=k, k_prime=k_prime)
                 recall = get_recall(ground_truth_doc_ids=ground_truth, approximate_top_doc_ids=approx_top_k)
-
                 recall_by_k_prime[k_prime] = recall
 
+            # use a dictionary comprehension to create idx_to_doc_id
             query_result = Result(
                 query_id=q_id,
                 recall_by_k_prime=recall_by_k_prime,
@@ -98,7 +98,6 @@ def get_approximate_top_k(
     """
     Calculate approximate top k as the top k documents in the set union of the
         top k' dense and top k' sparse document scores
-
     :param sparse_scores:
     :param dense_scores:
     :param k:
