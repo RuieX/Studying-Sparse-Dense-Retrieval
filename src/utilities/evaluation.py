@@ -33,6 +33,7 @@ def get_dataset_results(
         scores_by_query_id: Mapping[Any, ScoresPair],
         k_values: Sequence[int],
         idx_to_doc_id: Mapping[int, Any],
+        step_sizes: List[int]
 ) -> ResultsByK:
     """
     Tests retrieval system for different values of k and returns a set of results for each such k
@@ -40,6 +41,7 @@ def get_dataset_results(
     :param k_values: set of values of k to run the retrieval system on
     :param idx_to_doc_id: map that contains actual document ids
         (i.e. from the original dataset) keyed by document indices
+    :param step_sizes: list of step sizes to use when iterating over the range of k_prime values
     :return:
     """
 
@@ -59,8 +61,18 @@ def get_dataset_results(
 
             n_docs = len(sparse)
             recall_by_k_prime = {}  # Dict[int, float]
-            # check k' as 10 evenly spaced values between k and n_docs
-            for k_prime in np.linspace(k, n_docs, num=20, dtype=int):
+
+            # Iterate over the range of k_prime values with gradually increasing step size
+            k_prime_values = []
+            step_index = 0
+            next_k_prime = k
+            while next_k_prime <= n_docs:
+                k_prime_values.append(next_k_prime)
+                next_k_prime += step_sizes[step_index]
+                step_index = min(step_index+1, len(step_sizes)-1)
+
+            # Calculate recall for each k_prime value
+            for k_prime in k_prime_values:
                 approx_top_k = get_approximate_top_k(sparse_scores=sparse, dense_scores=dense, k=k, k_prime=k_prime)
                 recall = get_recall(ground_truth_doc_ids=ground_truth, approximate_top_doc_ids=approx_top_k)
                 recall_by_k_prime[k_prime] = recall
