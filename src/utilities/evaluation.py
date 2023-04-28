@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 
 import src.utilities.scores as sc
 
+
 DocumentIndices: Type = np.ndarray[int]
 
 
