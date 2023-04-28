@@ -140,7 +140,6 @@ def get_recall(ground_truth_doc_ids: DocumentIndices, approximate_top_doc_ids: D
 def normalize_scores(scores: sc.Scores) -> sc.Scores:
     """
     Returns a normalized vector of scores, where the maximum score is 1.
-
     :param scores:
     :return:
     """

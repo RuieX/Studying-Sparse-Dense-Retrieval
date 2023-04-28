@@ -42,7 +42,7 @@ def get_dense_doc_embeddings(
         docs: tkn.Documents
 ) -> List[DenseEmbedding]:
     """
-    documents embeddings using pre-trained transformer
+    Documents embeddings using pre-trained transformer
     https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2#usage-sentence-transformers
     :param docs: document to calculate the scores for
     :return:

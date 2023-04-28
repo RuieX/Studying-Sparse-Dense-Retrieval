@@ -73,8 +73,8 @@ def get_tokenized_documents(
         for doc_id, doc in tqdm(docs.items(), desc="Tokenizing documents")
     ]
 # Each TokenizedText object contains a document ID and a list of tokenized words for that document.
-# The function uses the get_tokenizer function to get a tokenizer based on the tokenization_type,
-# and then applies that tokenizer to each document in docs using the tokenize function.
+# The function get a bert-base-uncased BertTokenizer,
+# and applies the tokenizer to each document in docs using the tokenize function.
 
 
 def get_tokenized_queries(
