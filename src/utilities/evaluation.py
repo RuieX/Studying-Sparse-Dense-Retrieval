@@ -2,9 +2,9 @@ import dataclasses
 from typing import Type, Mapping, Sequence, Dict, List, NamedTuple, Any
 import tqdm
 import numpy as np
+import matplotlib.pyplot as plt
 
 import src.utilities.scores as sc
-
 
 DocumentIndices: Type = np.ndarray[int]
 
@@ -69,7 +69,7 @@ def get_dataset_results(
             while next_k_prime <= n_docs:
                 k_prime_values.append(next_k_prime)
                 next_k_prime += step_sizes[step_index]
-                step_index = min(step_index+1, len(step_sizes)-1)
+                step_index = min(step_index + 1, len(step_sizes) - 1)
 
             # Calculate recall for each k_prime value
             for k_prime in k_prime_values:
@@ -145,3 +145,91 @@ def normalize_scores(scores: sc.Scores) -> sc.Scores:
     """
 
     return scores / np.max(scores)
+
+
+def plot_mean_recall_vs_k_prime(results_by_k, separate_plots=False):
+    # initialize a dictionary to store the mean recall values for each k
+    mean_recall_by_k = {}
+
+    # create a figure with subplots if separate_plots is True
+    num_plots = len(results_by_k)
+    num_cols = 3
+    num_rows = (num_plots + 2) // num_cols
+    if separate_plots:
+        fig, axs = plt.subplots(ncols=num_cols, nrows=num_rows, figsize=(12, 4 * num_rows))
+
+    # colors for each k value
+    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+              '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#18BFD0']
+
+    # loop through results_by_k dictionary
+    for i, (k_val, results) in enumerate(results_by_k.items()):
+        # initialize a dictionary to store the recall values for each query at each k_prime value
+        recall_values_by_k_prime = {}
+        # loop through results for each query
+        for result in results:
+            recall_by_k_prime = result.recall_by_k_prime
+            # loop through recall values for each k_prime and add them to the dictionary for this query
+            for k_prime, recall in recall_by_k_prime.items():
+                if k_prime not in recall_values_by_k_prime:
+                    recall_values_by_k_prime[k_prime] = []
+                recall_values_by_k_prime[k_prime].append(recall)
+        # compute the mean recall values at each k_prime value for all queries
+        mean_recall_values_by_k_prime = {k_prime: np.mean(recall_values) for k_prime, recall_values in
+                                         recall_values_by_k_prime.items()}
+        # add the mean recall values to the dictionary for this k value
+        mean_recall_by_k[k_val] = mean_recall_values_by_k_prime
+
+        # find the index of the first k_prime value where recall is 1
+        max_k_prime = max(mean_recall_values_by_k_prime.keys())
+        max_recall = max(mean_recall_values_by_k_prime.values())
+        first_k_prime_with_max_recall = next((k_prime for k_prime in range(1, max_k_prime + 1) if
+                                              k_prime not in mean_recall_values_by_k_prime or
+                                              mean_recall_values_by_k_prime[k_prime] < max_recall), max_k_prime + 1)
+        last_k_prime = min(first_k_prime_with_max_recall + 10, max_k_prime + 1)
+
+        # plot the mean recall values for each k_prime value
+        if separate_plots:
+            row_num = i // num_cols
+            col_num = i % num_cols
+            axs[row_num, col_num].plot(list(mean_recall_values_by_k_prime.keys())[:last_k_prime],
+                                       list(mean_recall_values_by_k_prime.values())[:last_k_prime],
+                                       label=f"k={k_val}",
+                                       color=colors[i % len(colors)])
+            # set axis labels and title for this subplot
+            axs[row_num, col_num].set_xlabel("k_prime")
+            axs[row_num, col_num].set_ylabel("mean recall")
+            axs[row_num, col_num].set_title(f"Mean Recall vs k_prime for k={k_val}")
+            # set y-axis limit from 0 to 1.05 for this subplot
+            axs[row_num, col_num].set_ylim([0, 1.05])
+            # add legend for this subplot
+            axs[row_num, col_num].legend()
+        else:
+            plt.plot(list(mean_recall_values_by_k_prime.keys()),
+                     list(mean_recall_values_by_k_prime.values()),
+                     label=f"k={k_val}",
+                     color=colors[i % len(colors)])
+
+    # set axis labels and title for the plot
+    plt.xlabel("k_prime")
+    plt.ylabel("mean recall")
+    plt.title("Mean Recall vs k_prime for all k values")
+    # set y-axis limit from 0 to 1.05 for the plot
+    plt.ylim([0, 1.05])
+    # set x-axis limit and padding to the left side of the plot
+    plt.xlim([-500, 20000])
+
+    # show the plot or subplots
+    if separate_plots:
+        # remove any unused subplots
+        for i in range(num_plots, num_rows * num_cols):
+            axs[i // num_cols, i % num_cols].remove()
+        # adjust spacing between subplots
+        fig.tight_layout()
+        # show the subplots
+        plt.show()
+    else:
+        # add legend for the plot
+        plt.legend()
+        # show the plot
+        plt.show()
