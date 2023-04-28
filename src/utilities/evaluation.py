@@ -162,8 +162,8 @@ def plot_mean_recall_vs_k_prime(results_by_k: ResultsByK, split_plots: bool = Fa
     if split_plots:
         fig, axs = plt.subplots(ncols=n_cols, nrows=n_rows, figsize=(12, 4 * n_rows))
 
-    colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
-              '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#18BFD0']
+    colors = ["#001f3f", "#0074D9", "#008080", "#00FFFF", "#01FF70", "#2ECC40",
+              "#7FDBFF", "#B10DC9", "#FF4136", "#FF80CC", "#FF851B", "#FFDC00"]
 
     # loop through results_by_k dictionary
     for i, (k_val, results) in enumerate(results_by_k.items()):
@@ -216,7 +216,7 @@ def plot_mean_recall_vs_k_prime(results_by_k: ResultsByK, split_plots: bool = Fa
     plt.ylabel("mean recall")
     plt.title("Mean Recall vs k_prime for all k values")
     plt.ylim([0, 1.05])
-    plt.xlim([-500, 20000])
+    plt.xlim([-500, 25000])
 
     # show the plot/subplots
     if split_plots:
