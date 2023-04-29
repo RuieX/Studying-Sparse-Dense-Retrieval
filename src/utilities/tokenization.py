@@ -41,7 +41,6 @@ GroundTruth: Type = Dict[str, Dict[str, int]]
 """
 
 Dataset: Type = Tuple[Documents, Queries, GroundTruth]
-
 Tokens: Type = Sequence[str]
 
 

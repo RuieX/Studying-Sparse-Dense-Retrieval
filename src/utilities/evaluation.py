@@ -7,19 +7,12 @@ import matplotlib.pyplot as plt
 import src.utilities.scores as sc
 
 
-DocumentIndices: Type = np.ndarray[int]
-
-
 @dataclasses.dataclass
 class Result:
     query_id: str
     recall_by_k_prime: Dict[int, float]
-    ground_truth: DocumentIndices
-
-    idx_to_doc_id: Dict[int, str]
-    """
-    Dictionary that maps document indices to their actual id in the original dataset
-    """
+    ground_truth: np.ndarray[int]
+    idx_to_doc_id: Dict[int, str]  # to map documents' index to their actual id in the dataset
 
 
 ResultsByK: Type = Dict[int, List[Result]]
@@ -96,7 +89,7 @@ def get_ground_truth(
         sparse_scores: sc.Scores,
         dense_scores: sc.Scores,
         k: int
-) -> DocumentIndices:
+) -> np.ndarray[int]:
     merged_scores = sparse_scores + dense_scores
 
     return sc.get_top_k_indexes(merged_scores, k=k)
@@ -107,7 +100,7 @@ def get_approximate_top_k(
         dense_scores: sc.Scores,
         k: int,
         k_prime: int
-) -> DocumentIndices:
+) -> np.ndarray[int]:
     """
     Calculate approximate top k as the top k documents in the set union of the
         top k' dense and top k' sparse document scores
@@ -133,7 +126,7 @@ def get_approximate_top_k(
     return top_k_prime_union_indexes[top_k_union_indexes]
 
 
-def get_recall(ground_truth_doc_ids: DocumentIndices, approximate_top_doc_ids: DocumentIndices) -> float:
+def get_recall(ground_truth_doc_ids: np.ndarray[int], approximate_top_doc_ids: np.ndarray[int]) -> float:
     return (len(np.intersect1d(ground_truth_doc_ids, approximate_top_doc_ids))) / len(ground_truth_doc_ids)
 
 
