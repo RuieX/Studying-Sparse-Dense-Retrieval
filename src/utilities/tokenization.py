@@ -65,23 +65,34 @@ SUBWORD_TOKENIZER: Tokenizer = BertTokenizer.from_pretrained("bert-base-uncased"
 def get_tokenized_documents(
         docs: Documents
 ) -> TokenizedDocuments:
+    """
+    The function get a bert-base-uncased BertTokenizer,
+    and applies the tokenizer to each document in docs using the tokenize function.
+    :param docs:
+    :return:
+    """
     tokenizer = SUBWORD_TOKENIZER
 
     return [
+        # Each TokenizedText object contains a document ID and a list of tokenized words for that document.
         TokenizedText(text_id=doc_id, tokens=tokenize(compact_document(doc), tokenizer))
         for doc_id, doc in tqdm(docs.items(), desc="Tokenizing documents")
     ]
-# Each TokenizedText object contains a document ID and a list of tokenized words for that document.
-# The function get a bert-base-uncased BertTokenizer,
-# and applies the tokenizer to each document in docs using the tokenize function.
 
 
 def get_tokenized_queries(
         queries: Queries
 ) -> TokenizedQueries:
+    """
+    The function get a bert-base-uncased BertTokenizer,
+    and applies the tokenizer to each query in queries using the tokenize function.
+    :param queries:
+    :return:
+    """
     tokenizer = SUBWORD_TOKENIZER
 
     return [
+        # Each TokenizedText object contains a document ID and a list of tokenized words for that document.
         TokenizedText(text_id=q_id, tokens=tokenize(q_text, tokenizer))
         for q_id, q_text in tqdm(queries.items(), desc="Tokenizing queries")
     ]
@@ -89,27 +100,28 @@ def get_tokenized_queries(
 
 def compact_documents(docs: Documents) -> Sequence[str]:
     """
-    Transforms each document into a single string, where "title" and "text" fields
-        are "compacted" into a single text body
-    :param docs: documents to process
-    :return: compacted documents: each document is now a single string instead of a dictionary
+    Transforms each document into a compact form
+    :param docs:
+    :return: sequence of compacted documents
     """
-
     return [compact_document(d) for d in docs.values()]
 
 
 def compact_document(doc: Document) -> str:
+    """
+    Compact form of the document
+    :param doc:
+    :return: string representation of the document where the title and text fields are concatenated.
+    """
     return f"{doc['title']} {doc['text']}"
 
 
 def tokenize(text: str, tokenizer: Tokenizer) -> Tokens:
     tokens = tokenizer.tokenize(text)
     tokens = remove_punctuation(remove_stopwords(tokens))
-
     return tokens
 
 
-# Note: Python's set() has O(1) membership checking
 nltk.download("stopwords")  # https://pythonspot.com/nltk-stop-words/
 STOPWORDS = set(nltk.corpus.stopwords.words("english"))
 PUNCTUATION = set([c for c in string.punctuation])
