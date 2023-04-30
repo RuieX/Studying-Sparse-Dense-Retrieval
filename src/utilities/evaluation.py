@@ -128,11 +128,10 @@ def normalize_scores(scores: sc.Scores) -> sc.Scores:
 
 def plot_mean_recall_vs_k_prime(results_by_k: ResultsByK, split_plots: bool = False) -> None:
     """
-    Plots the mean recall values for each k_prime value across all queries, for each k value in the
-    results_by_k dictionary
-    :param results_by_k: A dictionary where the keys are the k values and the values are lists of Result.
-        Each Result contains the recall values for a single query at various values of k_prime
-    :param split_plots: If True, creates a separate subplot for each k value. Plots all on a single plot otherwise.
+    Plots the mean recall values for each k_prime value across all queries, for each k value in results_by_k
+    :param results_by_k: dictionary with k values as keys and lists of Result as values
+        where each Result contains the recall values for a query at different values of k_prime
+    :param split_plots: If True, creates a separate subplot for each k value. Plots all on a single plot otherwise
     """
     # create a figure with subplots if separate_plots is True
     n_plots = len(results_by_k)
